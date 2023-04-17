@@ -11,18 +11,8 @@
 TDS3_CST816 touch(18, 17, 21, 16);	//  sda, scl, rst, irq of T-DisplayS3 Touch.
 
 void setup() {
-  Serial.begin(115200);
-
-  touch.begin();  //  Initiates the communication with CST816 touch display IC.
-
-  //  CST816 readings info.
-  Serial.print(touch.data.version);
-  Serial.print("\t");
-  Serial.print(touch.data.versionInfo[0]);
-  Serial.print("-");
-  Serial.print(touch.data.versionInfo[1]);
-  Serial.print("-");
-  Serial.println(touch.data.versionInfo[2]);
+  Serial.begin(115200); // Iniates the serial communication with ESP32-S3.
+  touch.begin();  //  Initiates the I2C communication with CST816 touch display IC.
 }
 
 void loop() {
