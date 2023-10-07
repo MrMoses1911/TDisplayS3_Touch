@@ -6,34 +6,43 @@
   This example shows how to use the "T-Display S3 Touch" screen as a touch input for various projects.
   Open the serial monitor to see it in action.
 */
+
+#include <TFT_eSPI.h>
 #include <TDS3_CST816.h>
 
+TFT_eSPI tft = TFT_eSPI();
 TDS3_CST816 touch(18, 17, 21, 16);	//  sda, scl, rst, irq of T-DisplayS3 Touch.
 
+String full_y, x_tft, gesture;
+bool radial_bt;
+
 void setup() {
-  Serial.begin(115200); // Iniates the serial communication with ESP32-S3.
   touch.begin();  //  Initiates the I2C communication with CST816 touch display IC.
+
+  tft.begin();
+  tft.setRotation(0);
+  tft.fillScreen(TFT_BLACK);
 }
 
 void loop() {
-  if (touch.available()) {  //  Checks for a touch input and returns parameters in the "data" structure
-    Serial.print("Gesture: ");
-    Serial.print(touch.gesture());  //  Gesture ID: NONE, SWIPE DOWN, SWIPE UP, SWIPE LEFT, SWIPE RIGHT, SINGLE_CLICK, DOUBLE_CLICK, LONG_PRESS
-    Serial.print("\t");
-    Serial.print("X: ");
-    Serial.print(touch.data.x); //  Display X coordinate (0 to 170)
-    Serial.print("\t");
-    Serial.print("Y: ");
-    Serial.print(touch.data.y); //  Display Y coordinate (0 to 255). Goes back to 0 when sector = 1
-    Serial.print("\t");
-    Serial.print("Sector: ");
-    Serial.print(touch.data.sector);  //  Screen division in sectors. When Y <= 255, sector = 0; When Y > 255, sector = 1
-    Serial.print("\t");
-    Serial.print("Full Y: ");
-    Serial.print(touch.data.full_y);  //  Display full Y coordinate (0 to 359). Use this parameter for touch inputs
-    Serial.print("\t");
-    Serial.print("Radial button: ");
-    Serial.println(touch.data.radial_button); //  Radial button pressed when y = 104 and sector = 1 or full_y = 359         
+  if (touch.available()){
+      x_tft = String(touch.data.x);
+      full_y = String(touch.data.full_y);
+      radial_bt = touch.data.radial_button;
+      gesture = touch.gesture();
+  }
+
+  tft.drawString("X:  " + x_tft + "         ", 0, 0, 4);
+  tft.drawString("Y:  " + full_y + "        ", 0, 28, 4);
+  tft.drawString(gesture + "                       ", 0, 120, 4);
+
+  if(radial_bt == true) {
+   tft.drawString("  Radial Button                 ", 0, 200, 4);
+   tft.drawString("       Pressed!                 ", 0, 226, 4);   
+  }
+  else {
+   tft.drawString("                                ", 0, 200, 4);
+   tft.drawString("                                ", 0, 226, 4);  
   }
 }
 
