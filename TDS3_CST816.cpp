@@ -98,10 +98,10 @@ String TDS3_CST816::gesture() {
       return "NONE";
       break;
     case SWIPE_DOWN:
-      return "SWIPE UP";
+      return "SWIPE DOWN";
       break;
     case SWIPE_UP:
-      return "SWIPE DOWN";
+      return "SWIPE UP";
       break;
     case SWIPE_LEFT:
       return "SWIPE LEFT";
